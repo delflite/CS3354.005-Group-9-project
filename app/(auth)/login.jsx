@@ -1,6 +1,6 @@
 import { Keyboard, StyleSheet, Text } from 'react-native'
 import React from 'react'
-import {Link} from 'expo-router'
+import {Link, useRouter} from 'expo-router'
 import { useState } from 'react'
 import  ThemedButton  from '../../components/ThemedButton'
 import ThemedView from '../../components/ThemedView'
@@ -19,6 +19,7 @@ const Login = () => {
     const [error, setError] = useState(null)
 
     const {login} = useUser()
+    const router = useRouter()
 
     const handleSubmit = async () => {
 
@@ -26,7 +27,7 @@ const Login = () => {
 
         try{
           await login(email, password)
-          
+          router.push('/profile')
         }catch (error) {
           setError(error.message)
         }
