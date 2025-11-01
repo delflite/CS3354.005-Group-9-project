@@ -74,6 +74,7 @@ const Login = () => {
           
       </Link>
 
+    
     </ThemedView>
     </TouchableWithoutFeedback>
   )

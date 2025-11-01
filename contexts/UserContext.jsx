@@ -36,6 +36,8 @@ export function UserProvider({children}) {
         setUser(null)
     }
 
+    
+
     async function getInitialUserValue()
     {
         try {
