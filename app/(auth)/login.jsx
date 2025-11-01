@@ -29,7 +29,8 @@ const Login = () => {
           await login(email, password)
           router.push('/profile')
         }catch (error) {
-          setError(error.message)
+          // Show generic error message for security (don't reveal if email exists or password is wrong)
+          setError('incorrect email or password')
         }
     }
   return (

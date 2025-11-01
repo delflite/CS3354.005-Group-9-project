@@ -14,6 +14,8 @@ import { launchImageLibrary } from 'react-native-image-picker'
 import { storage } from '../../lib/appwrite'
 import { ID} from 'appwrite'
 import { Image } from 'react-native'
+import { validateSkillProof, validateSkillName } from '../../lib/validation'
+import { Colors } from '../../constants/Colors'
 
 
 const Create = () => {
@@ -21,6 +23,7 @@ const Create = () => {
   const [skill, setSkill] = useState("")
   const [loading, setLoading] = useState(false)
   const [image, setImage] = useState()
+  const [error, setError] = useState(null)
 
   const {createSkill} = useSkills()
   const router = useRouter()
@@ -74,23 +77,38 @@ const Create = () => {
   
 
   const handleSubmit = async () =>{
-    if(!skill.trim()) return
+    setError(null)
+
+    // Validate skill proof file
+    const fileValidation = validateSkillProof(image)
+    if (!fileValidation.isValid) {
+      setError(fileValidation.error)
+      return
+    }
+
+    // Validate skill name
+    const skillValidation = validateSkillName(skill)
+    if (!skillValidation.isValid) {
+      setError(skillValidation.error)
+      return
+    }
 
     setLoading(true)
 
     try {
-      //const imageFileId = await uploadImageToAppwrite(image)
+      const imageFileId = await uploadImageToAppwrite(image)
       
-      
-      /*await createSkill({
+      await createSkill({
         skill,
         imageFileId
-      })*/
+      })
 
       setSkill("")
+      setImage(null)
       router.replace('/skills')
     }catch (error){
       console.log("Error creating skill: ", error)
+      setError('Failed to create skill. Please try again.')
     }
 
     setLoading(false)
@@ -138,6 +156,8 @@ const Create = () => {
         </Text>
       </ThemedButton>
 
+      <Spacer/>
+      {error && <Text style = {styles.error}>{error}</Text>}
 
     </ThemedView>
     </TouchableWithoutFeedback>
@@ -177,6 +197,16 @@ const styles = StyleSheet.create({
       minHeight: 100,
       alignSelf: 'stretch',
       marginHorizontal: 40
+    },
+    error: {
+      color: Colors.warning,
+      padding: 10,
+      backgroundColor: '#f5c1c8',
+      borderColor: Colors.warning,
+      borderWidth: 1,
+      borderRadius: 6,
+      marginHorizontal: 10,
+      textAlign: 'center'
     }
 
 })

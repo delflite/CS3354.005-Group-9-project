@@ -9,6 +9,8 @@ import ThemedText from '../../components/ThemedText'
 import ThemedTextInput from '../../components/ThemedTextInput'
 import { TouchableWithoutFeedback } from 'react-native'
 import {useUser} from "../../hooks/useUser"
+import { validateEmail, validatePassword } from '../../lib/validation'
+import { Colors } from '../../constants/Colors'
 
 
 const Register = () => {
@@ -21,6 +23,20 @@ const Register = () => {
 
     const handleSubmit = async () => {
         setError(null)
+
+        // Validate email
+        const emailValidation = validateEmail(email)
+        if (!emailValidation.isValid) {
+            setError(emailValidation.error)
+            return
+        }
+
+        // Validate password
+        const passwordValidation = validatePassword(password)
+        if (!passwordValidation.isValid) {
+            setError(passwordValidation.error)
+            return
+        }
 
         try{
           await register(email, password)
@@ -61,6 +77,9 @@ const Register = () => {
         <Text style = {{color: '#f2f2f2'}}>Register</Text>
       </ThemedButton>
 
+      <Spacer/>
+      {error && <Text style = {styles.error}>{error}</Text>}
+
       <Spacer height = {20}/>
       <Link href = '/login'>
         <ThemedText style = {{textAlign: 'center'}}>
@@ -94,5 +113,14 @@ const styles = StyleSheet.create
     link: {
       marginVertical: 10,
       borderBottomWidth: 1
+    },
+    error: {
+      color: Colors.warning,
+      padding: 10,
+      backgroundColor: '#f5c1c8',
+      borderColor: Colors.warning,
+      borderWidth: 1,
+      borderRadius: 6,
+      marginHorizontal: 10
     }
 })
