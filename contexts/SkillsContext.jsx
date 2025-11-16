@@ -1,6 +1,6 @@
-import { createContext, useState } from "react";
-import { databases, tablesDB } from "../lib/appwrite";
-import { ID, Permission, Role } from "appwrite";
+import { createContext, useEffect, useState } from "react";
+import { databases, tablesDB, client, realtime } from "../lib/appwrite";
+import { ID, Permission, Query, Role } from "appwrite";
 import { useUser } from "../hooks/useUser";
 
 const DATABASE_ID = "6903f95c0024b57749ff"
@@ -16,6 +16,16 @@ export function SkillsProvider({children})
     async function fetchSkills()
     {
         try {
+
+            const response = await tablesDB.listRows({
+
+                databaseId: DATABASE_ID,
+                tableId: COLLECTION_ID,
+                queries: [Query.equal('userId', user.$id)]
+
+            })
+
+            setSkills(response.rows)
 
         } catch (error){
             console.error(error.message)
@@ -33,8 +43,8 @@ export function SkillsProvider({children})
                 rowId: ID.unique(),
                 data: {
                     ...data,
-                    userId: user.$id,
-                    imageFileId: data.imageFileId ?? null
+                    userId: user.$id
+                    
                 },
                 
                 read: [Permission.read(Role.user(user.$id))],
@@ -57,6 +67,38 @@ export function SkillsProvider({children})
             console.error(error.message)
         }
     }
+
+    useEffect(() => {
+
+        let unsubscribe
+        const channel = `databases.${DATABASE_ID}.tables.${COLLECTION_ID}.rows`
+        
+        if (user)
+        {
+            fetchSkills()
+            
+            unsubscribe = realtime.subscribe(channel, (response) => {
+                const {payload, events} = response
+
+                if (events[0].includes('create'))
+                {
+                    setSkills((prevSkills) => [...prevSkills, payload])
+                }
+            })
+
+            
+        }
+        else
+        {
+            setSkills([])
+        }
+
+        return () => {
+
+            if (unsubscribe) unsubscribe()
+        }
+
+    }, [user])
 
     return (
         <SkillsContext.Provider
