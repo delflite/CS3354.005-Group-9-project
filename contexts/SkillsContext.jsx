@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
-import { databases, tablesDB, client, realtime } from "../lib/appwrite";
-import { ID, Permission, Query, Role } from "appwrite";
+import { databases, tablesDB, client } from "../lib/appwrite";
+import { ID, Permission, Query, Role } from 'react-native-appwrite';
 import { useUser } from "../hooks/useUser";
 
 const DATABASE_ID = "6903f95c0024b57749ff"
@@ -52,17 +52,41 @@ export function SkillsProvider({children})
                     Permission.delete(Role.user(user.$id))]
                 
             })
-            setSkills(prev => [...prev, newSkill])
-            return newSkill
+            
         }catch (error){
             console.error(error.message)
         }
     }
 
-    async function deleteSkill()
+    async function fetchSkillById(id)
+    {
+        try
+        {
+            const response = await tablesDB.getRow({
+
+                databaseId: DATABASE_ID,
+                tableId: COLLECTION_ID,
+                rowId: id
+                
+            })
+
+            return response
+
+        } catch (error){
+            console.error(error.message)
+        }
+    }
+
+    async function deleteSkill(id)
     {
         try {
-            
+            await tablesDB.deleteRow({
+
+                databaseId: DATABASE_ID,
+                tableId: COLLECTION_ID,
+                rowId: id
+
+            })
         } catch (error){
             console.error(error.message)
         }
@@ -77,12 +101,17 @@ export function SkillsProvider({children})
         {
             fetchSkills()
             
-            unsubscribe = realtime.subscribe(channel, (response) => {
+            unsubscribe = client.subscribe(channel, (response) => {
                 const {payload, events} = response
 
                 if (events[0].includes('create'))
                 {
                     setSkills((prevSkills) => [...prevSkills, payload])
+                }
+
+                if (events[0].includes('delete'))
+                {
+                    setSkills((prevSkills) => prevSkills.filter((skill) => skill.$id !== payload.$id))
                 }
             })
 
@@ -102,7 +131,7 @@ export function SkillsProvider({children})
 
     return (
         <SkillsContext.Provider
-            value = {{skills, fetchSkills, createSkill, deleteSkill}}
+            value = {{skills, fetchSkills, createSkill, deleteSkill, fetchSkillById}}
             >
                 {children}
 

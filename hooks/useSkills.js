@@ -7,7 +7,7 @@ export function useSkills()
 
     if(!context)
     {
-        throw new Error("useUser must be used within a SkillsProvider")
+        throw new Error("useSkills must be used within a SkillsProvider")
     }
 
     return context

@@ -23,6 +23,7 @@ const DashboardLayout = () => {
         <Tabs.Screen name = "profile" options={{title: 'Profile'}}/> 
         <Tabs.Screen name = "create" options={{title: 'Create'}}/> 
         <Tabs.Screen name = "skills" options={{title: 'Skills'}}/>
+        <Tabs.Screen name = "skills/[id]" options = {{href: null}}/>
     </Tabs>
     </UserOnly>
   )

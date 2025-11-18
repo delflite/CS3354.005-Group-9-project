@@ -1,4 +1,4 @@
-import { StyleSheet, FlatList, Pressable } from 'react-native'
+import { StyleSheet, FlatList, Pressable, TouchableOpacity } from 'react-native'
 import React from 'react'
 import ThemedView from '../../components/ThemedView'
 import Spacer from '../../components/Spacer'
@@ -6,10 +6,12 @@ import ThemedText from '../../components/ThemedText'
 import { useSkills } from '../../hooks/useSkills'
 import { Colors } from '../../constants/Colors'
 import ThemedCard from '../../components/ThemedCard'
+import { useRouter } from 'expo-router'
 
 const Skills = () => {
 
   const { skills } = useSkills()
+  const router = useRouter()
 
   return (
     <ThemedView style={styles.container} safe = {true}>
@@ -25,13 +27,13 @@ const Skills = () => {
         keyExtractor={(item) => item.$id}
         contentContainerStyle = {styles.list}
         renderItem={({item}) => (
-          <Pressable>
+          <TouchableOpacity onPress={() => router.push(`/skills/${item.$id}`)}>
             <ThemedCard style = {styles.card}>
               <ThemedText style = {styles.title}>
                 {item.skill}
               </ThemedText>
             </ThemedCard>
-          </Pressable>
+          </TouchableOpacity>
         )}
       />
 
@@ -49,11 +51,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
 
-    title:
-    {
-        fontWeight: 'bold',
-        fontSize: 18
-    },
+    
     heading: {
         fontWeight: "bold",
         fontSize: 18
