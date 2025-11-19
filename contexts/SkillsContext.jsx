@@ -11,6 +11,7 @@ export const SkillsContext = createContext()
 export function SkillsProvider({children})
 {
     const [skills, setSkills] = useState([])
+    const [otherUserSkills, setOtherSkills] = useState()
     const {user} = useUser()
 
     async function fetchSkills()
@@ -92,6 +93,25 @@ export function SkillsProvider({children})
         }
     }
 
+    async function fetchAllSkills()
+    {
+        try
+        {
+            const response = await tablesDB.listRows({
+
+            databaseId: DATABASE_ID,
+            tableId: COLLECTION_ID,
+            queries: [Query.notEqual("userId", user.$id)]
+        })
+
+            setOtherSkills(response.rows)
+
+        } catch(error)
+        {
+            console.error(error.message)
+        }
+    }
+
     useEffect(() => {
 
         let unsubscribe
@@ -131,7 +151,7 @@ export function SkillsProvider({children})
 
     return (
         <SkillsContext.Provider
-            value = {{skills, fetchSkills, createSkill, deleteSkill, fetchSkillById}}
+            value = {{skills, fetchSkills, createSkill, deleteSkill, fetchSkillById, fetchAllSkills}}
             >
                 {children}
 

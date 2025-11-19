@@ -1,4 +1,4 @@
-import { Keyboard, StyleSheet, Text } from 'react-native'
+import { Keyboard, StyleSheet, Text, View } from 'react-native'
 import ThemedView from '../../components/ThemedView'
 import Spacer from '../../components/Spacer'
 import ThemedText from '../../components/ThemedText'
@@ -10,12 +10,14 @@ import { useState } from 'react'
 import ThemedTextInput from '../../components/ThemedTextInput'
 import { useSkills } from '../../hooks/useSkills'
 import { useRouter } from 'expo-router'
+import { Picker } from '@react-native-picker/picker'
 
 
 const Create = () => {
   
 
   const [skill, setSkill] = useState("")
+  const [skillType, setSkillType] = useState("have")
   const [loading, setLoading] = useState(false)
 
   const { createSkill } = useSkills()
@@ -40,7 +42,11 @@ const Create = () => {
     
     setLoading(true)
     
-    await createSkill({skill})
+    await createSkill({
+
+      skill: skill,
+      skillType: skillType
+    })
 
     setSkill("")
 
@@ -63,14 +69,31 @@ const Create = () => {
         <Text style = {{color: 'white'}}>Upload Image</Text>
       </TouchableOpacity>
 
+      <Spacer/>
+
       <ThemedTextInput
         style = {styles.input}
         placeholder = "Skill"
         value = {skill}
         onChangeText = {setSkill}
       />
-        
+
       
+      <View style={{ flexDirection: "row", marginTop: 15 }}>
+        <TouchableOpacity onPress={() => setSkillType("teach")}>
+          <Text style={{ padding: 10, color: "white",backgroundColor: skillType === "teach" ? "#045f16ff" : "#68090eff" }}>
+            Teach
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => setSkillType("learn")}>
+          <Text style={{ padding: 10, color: "white",backgroundColor: skillType === "learn" ? "#045f16ff" : "#68090eff" }}>
+            Learn
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <Spacer/>
 
       <ThemedButton onPress = {handleSubmit} disabled = {loading}>
         <Text style = {{color: '#f2f2f2'}}>

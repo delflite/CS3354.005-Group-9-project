@@ -1,20 +1,51 @@
 import { StyleSheet, Text } from 'react-native'
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import ThemedView from '../../components/ThemedView'
 import Spacer from '../../components/Spacer'
 import ThemedText from '../../components/ThemedText'
 import { useUser } from '../../hooks/useUser'
 import ThemedButton from '../../components/ThemedButton'
+import { useSkills } from '../../hooks/useSkills'
+
+
+
 
 const Profile = () => {
 
+  
   const {logout, user} = useUser()
+  const {fetchAllSkills} = useSkills()
+
+  useEffect(() => {
+
+    fetchAllSkills()
+  }, [])
+
+  /*useEffect(() =>{
+
+    fetchLocation()
+    
+    
+  }, [])
+
+  useEffect(() => {
+
+    if (latitude && longitude)
+    {
+      saveUserLocation(latitude, longitude)
+    }
+  }, [latitude, longitude])*/
+
   return (
     <ThemedView style={styles.container} safe = {true}>
 
       <ThemedText title = {true} style = {styles.heading}>
         {user.email}
       </ThemedText>
+
+      
+
+      
 
       <Spacer/>
       <ThemedButton onPress = {logout}>
