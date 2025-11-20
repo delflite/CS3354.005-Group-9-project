@@ -15,6 +15,7 @@ import { Colors } from '../../constants/Colors'
 const Register = () => {
 
     const [email, setEmail] = useState('')
+    const [name, setName] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState(null)
 
@@ -24,7 +25,7 @@ const Register = () => {
         setError(null)
 
         try{
-          await register(email, password)
+          await register(email, password, name)
           
         }catch (error) {
           setError(error.message)
@@ -39,6 +40,14 @@ const Register = () => {
         Register For an Account
       </ThemedText>
       <Spacer/>
+
+      <ThemedTextInput 
+        style = {{width: '80%', marginBottom: 20}}
+        placeholder='Name'
+        keyboardType = "default"
+        onChangeText = {setName}
+        value = {name}
+        />
 
       <ThemedTextInput 
         style = {{width: '80%', marginBottom: 20}}

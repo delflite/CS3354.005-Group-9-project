@@ -24,26 +24,12 @@ const Profile = () => {
           }
       }, [user])
 
-  /*useEffect(() =>{
-
-    fetchLocation()
-    
-    
-  }, [])
-
-  useEffect(() => {
-
-    if (latitude && longitude)
-    {
-      saveUserLocation(latitude, longitude)
-    }
-  }, [latitude, longitude])*/
 
   return (
     <ThemedView style={styles.container} safe = {true}>
 
       <ThemedText title = {true} style = {styles.heading}>
-        {user.email}
+        {user.name}
       </ThemedText>
 
       {otherUserSkills.length > 0 ? (

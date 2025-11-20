@@ -22,7 +22,7 @@ export function SkillsProvider({children})
 
                 databaseId: DATABASE_ID,
                 tableId: COLLECTION_ID,
-                queries: [Query.equal('userId', user.$id)]
+                queries: [Query.equal('userId', user.name)]
 
             })
 
@@ -44,7 +44,7 @@ export function SkillsProvider({children})
                 rowId: ID.unique(),
                 data: {
                     ...data,
-                    userId: user.$id
+                    userId: user.name
                     
                 },
                 
@@ -102,7 +102,7 @@ export function SkillsProvider({children})
 
             databaseId: DATABASE_ID,
             tableId: COLLECTION_ID,
-            queries: [Query.notEqual('userId', user.$id),
+            queries: [Query.notEqual('userId', user.name),
                     Query.equal('skillType', 'teach')
             ]
         })
