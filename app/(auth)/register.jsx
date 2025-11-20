@@ -1,4 +1,4 @@
-import { Keyboard, StyleSheet, Text } from 'react-native'
+import { Keyboard, StyleSheet, Text, Platform, TouchableWithoutFeedback, View, useColorScheme } from 'react-native'
 import React from 'react'
 import {Link} from 'expo-router'
 import { useState } from 'react'
@@ -7,7 +7,6 @@ import ThemedView from '../../components/ThemedView'
 import Spacer from '../../components/Spacer'
 import ThemedText from '../../components/ThemedText'
 import ThemedTextInput from '../../components/ThemedTextInput'
-import { TouchableWithoutFeedback } from 'react-native'
 import {useUser} from "../../hooks/useUser"
 import { validateEmail, validatePassword } from '../../lib/validation'
 import { Colors } from '../../constants/Colors'
@@ -20,6 +19,8 @@ const Register = () => {
     const [error, setError] = useState(null)
 
     const { register} = useUser()
+    const colorScheme = useColorScheme()
+    const theme = Colors[colorScheme] ?? Colors.light
 
     const handleSubmit = async () => {
         setError(null)
@@ -45,8 +46,11 @@ const Register = () => {
           setError(error.message)
         }
     }
+  const Container = Platform.OS === 'web' ? View : TouchableWithoutFeedback;
+  const containerProps = Platform.OS === 'web' ? { style: { flex: 1, backgroundColor: theme.background } } : { onPress: Keyboard.dismiss };
+
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <Container {...containerProps}>
     <ThemedView style = {styles.container}>
 
       <Spacer/>
@@ -87,9 +91,9 @@ const Register = () => {
         </ThemedText>
           
       </Link>
-
+    
     </ThemedView>
-    </TouchableWithoutFeedback>
+    </Container>
   )
 }
 

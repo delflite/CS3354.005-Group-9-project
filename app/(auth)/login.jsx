@@ -1,4 +1,4 @@
-import { Keyboard, StyleSheet, Text } from 'react-native'
+import { Keyboard, StyleSheet, Text, Platform, TouchableWithoutFeedback, View, useColorScheme } from 'react-native'
 import React from 'react'
 import {Link, useRouter} from 'expo-router'
 import { useState } from 'react'
@@ -8,7 +8,6 @@ import Spacer from '../../components/Spacer'
 import ThemedText from '../../components/ThemedText'
 import { Colors } from '../../constants/Colors'
 import ThemedTextInput from '../../components/ThemedTextInput'
-import { TouchableWithoutFeedback } from 'react-native'
 import { useUser } from '../../hooks/useUser'
 
 
@@ -20,6 +19,8 @@ const Login = () => {
 
     const {login} = useUser()
     const router = useRouter()
+    const colorScheme = useColorScheme()
+    const theme = Colors[colorScheme] ?? Colors.light
 
     const handleSubmit = async () => {
 
@@ -33,8 +34,11 @@ const Login = () => {
           setError('incorrect email or password')
         }
     }
+  const Container = Platform.OS === 'web' ? View : TouchableWithoutFeedback;
+  const containerProps = Platform.OS === 'web' ? { style: { flex: 1, backgroundColor: theme.background } } : { onPress: Keyboard.dismiss };
+
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <Container {...containerProps}>
     <ThemedView style = {styles.container}>
 
       <Spacer/>
@@ -77,7 +81,7 @@ const Login = () => {
 
     
     </ThemedView>
-    </TouchableWithoutFeedback>
+    </Container>
   )
 }
 

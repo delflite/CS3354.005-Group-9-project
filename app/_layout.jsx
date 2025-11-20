@@ -15,7 +15,7 @@ const RootLayout = () => {
   return (
     <UserProvider>
       <SkillsProvider>
-        <StatusBar value = "auto"/>
+        <StatusBar style = "auto"/>
         <Stack screenOptions = {{headerStyle: {backgroundColor: theme.background},
                                   headerTintColor: theme.text}}>
 
