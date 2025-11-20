@@ -11,7 +11,7 @@ export const SkillsContext = createContext()
 export function SkillsProvider({children})
 {
     const [skills, setSkills] = useState([])
-    const [otherUserSkills, setOtherSkills] = useState()
+    const [otherUserSkills, setOtherSkills] = useState([])
     const {user} = useUser()
 
     async function fetchSkills()
@@ -48,7 +48,7 @@ export function SkillsProvider({children})
                     
                 },
                 
-                read: [Permission.read(Role.user(user.$id))],
+                read: [Permission.read(Role.any())],
                 write: [Permission.update(Role.user(user.$id)),
                     Permission.delete(Role.user(user.$id))]
                 
@@ -95,15 +95,18 @@ export function SkillsProvider({children})
 
     async function fetchAllSkills()
     {
+
         try
         {
             const response = await tablesDB.listRows({
 
             databaseId: DATABASE_ID,
             tableId: COLLECTION_ID,
-            queries: [Query.notEqual("userId", user.$id)]
+            queries: [Query.notEqual('userId', user.$id),
+                    Query.equal('skillType', 'teach')
+            ]
         })
-
+            
             setOtherSkills(response.rows)
 
         } catch(error)
@@ -149,9 +152,12 @@ export function SkillsProvider({children})
 
     }, [user])
 
+    
+
     return (
         <SkillsContext.Provider
-            value = {{skills, fetchSkills, createSkill, deleteSkill, fetchSkillById, fetchAllSkills}}
+            value = {{skills, otherUserSkills, fetchSkills, createSkill,
+                         deleteSkill, fetchSkillById, fetchAllSkills}}
             >
                 {children}
 

@@ -1,4 +1,4 @@
-import { StyleSheet, Text } from 'react-native'
+import { StyleSheet, Text, FlatList, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect } from 'react'
 import ThemedView from '../../components/ThemedView'
 import Spacer from '../../components/Spacer'
@@ -14,12 +14,15 @@ const Profile = () => {
 
   
   const {logout, user} = useUser()
-  const {fetchAllSkills} = useSkills()
-
+  const {otherUserSkills, fetchAllSkills} = useSkills()
+  
   useEffect(() => {
-
-    fetchAllSkills()
-  }, [])
+  
+          if (user)
+          {
+              fetchAllSkills()
+          }
+      }, [user])
 
   /*useEffect(() =>{
 
@@ -43,8 +46,18 @@ const Profile = () => {
         {user.email}
       </ThemedText>
 
+      {otherUserSkills.length > 0 ? (
+                otherUserSkills.map((skill) => (
+                  <TouchableOpacity key={skill.$id}>
+                    <ThemedText>
+                        {skill.userId} - {skill.skill}
+                    </ThemedText>
+                  </TouchableOpacity>
+                ))
+            ) : (
+                <ThemedText>No new matches</ThemedText>
+            )}
       
-
       
 
       <Spacer/>
