@@ -164,3 +164,46 @@ export function SkillsProvider({children})
         </SkillsContext.Provider>
     )
 }
+
+
+
+//copy of fetchAllSkill function used only for testing
+export async function fetchAllSkillsTest(tablesDB, userName, setOtherSkills)
+{
+    
+
+        try
+        {
+            const response = await tablesDB.listRows({
+
+            databaseId: DATABASE_ID,
+            tableId: COLLECTION_ID,
+            queries: [Query.notEqual('userId', userName),
+                    Query.equal('skillType', 'teach')
+            ]
+        })
+            
+            setOtherSkills(response.rows)
+
+        } catch(error)
+        {
+            console.error(error.message)
+        }
+    
+}
+
+//copy of deleteSkill function used only for testing
+export async function deleteSkillTest(id)
+{
+    try {
+            await tablesDB.deleteRow({
+
+                databaseId: "123",
+                tableId: "skills",
+                rowId: id
+
+            })
+        } catch (error){
+            console.error(error.message)
+        }
+}
