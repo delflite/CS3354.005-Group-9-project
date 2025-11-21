@@ -22,6 +22,11 @@ const Home = () => {
       <Link href = "/profile" style = {styles.link}>
       <ThemedText>Profile</ThemedText>
       </Link>
+      <Link href="/skills-by-category" style={styles.link}>
+      <ThemedText>Skills by Category</ThemedText>
+      </Link>
+
+
     </ThemedView>
   )
 }
