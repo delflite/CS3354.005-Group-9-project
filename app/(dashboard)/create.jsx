@@ -12,12 +12,13 @@ import { useSkills } from '../../hooks/useSkills'
 import { useRouter } from 'expo-router'
 import { Picker } from '@react-native-picker/picker'
 
-
+// ...existing code...
 const Create = () => {
   
-
   const [skill, setSkill] = useState("")
   const [skillType, setSkillType] = useState("have")
+  const [category, setCategory] = useState("cooking") // added category state
+  const [showCategories, setShowCategories] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const { createSkill } = useSkills()
@@ -45,7 +46,8 @@ const Create = () => {
     await createSkill({
 
       skill: skill,
-      skillType: skillType
+      skillType: skillType,
+      category: category // include selected category
     })
 
     setSkill("")
@@ -77,6 +79,34 @@ const Create = () => {
         value = {skill}
         onChangeText = {setSkill}
       />
+
+      {/* Category dropdown (simple, no external package) */}
+      <View style={{ width: '80%', marginTop: 12 }}>
+        <TouchableOpacity
+          onPress={() => setShowCategories(v => !v)}
+          style={styles.selector}
+        >
+          <Text style={styles.selectorText}>
+            {category.charAt(0).toUpperCase() + category.slice(1)}
+          </Text>
+        </TouchableOpacity>
+
+        {showCategories && (
+          <View style={styles.dropdown}>
+            {['cooking','handiwork','technical','sports'].map((c) => (
+              <TouchableOpacity
+                key={c}
+                onPress={() => { setCategory(c); setShowCategories(false); Keyboard.dismiss(); }}
+                style={[styles.option, c === category && styles.selectedOption]}
+              >
+                <Text style={[styles.optionText, c === category && styles.selectedOptionText]}>
+                  {c.charAt(0).toUpperCase() + c.slice(1)}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+      </View>
 
       
       <View style={{ flexDirection: "row", marginTop: 15 }}>
@@ -133,6 +163,39 @@ const styles = StyleSheet.create({
       marginHorizontal: 40
 
     },
+   selector: {
+     paddingVertical: 12,
+     paddingHorizontal: 14,
+     borderRadius: 6,
+     borderWidth: 1,
+     borderColor: '#444',
+     backgroundColor: 'transparent'
+   },
+   selectorText: {
+     color: 'white'
+   },
+   dropdown: {
+     marginTop: 8,
+     borderRadius: 6,
+     overflow: 'hidden',
+     borderWidth: 1,
+     borderColor: '#333'
+   },
+   option: {
+     paddingVertical: 10,
+     paddingHorizontal: 12,
+     backgroundColor: '#111',
+   },
+   optionText: {
+     color: 'white'
+   },
+   selectedOption: {
+     backgroundColor: '#045f16ff'
+   },
+   selectedOptionText: {
+     color: '#fff',
+     fontWeight: '600'
+   },
     multiline: {
       padding: 20,
       borderRadius: 6,
